@@ -1,0 +1,126 @@
+// DSA with Java program to Merge Two Binary Trees
+import java.util.*;
+
+class GFG{
+
+/* A binary tree node has data, pointer to left child
+and a pointer to right child */
+static class Node
+{
+	int data;
+	Node left, right;
+};
+
+// Structure to store node pair onto stack
+static class snode
+{
+	Node l, r;
+};
+
+/* Helper function that allocates a new node with the
+given data and null left and right pointers. */
+static Node newNode(int data)
+{
+	Node new_node = new Node();
+	new_node.data = data;
+	new_node.left = new_node.right = null;
+	return new_node;
+}
+
+/* Given a binary tree, print its nodes in inorder*/
+static void inorder(Node node)
+{
+	if (node == null)
+		return;
+
+	/* first recur on left child */
+	inorder(node.left);
+
+	/* then print the data of node */
+	System.out.printf("%d ", node.data);
+
+	/* now recur on right child */
+	inorder(node.right);
+}
+
+/* Function to merge given two binary trees*/
+
+static Node MergeTrees(Node t1, Node t2)
+{
+	if ( t1 == null)
+		return t2;
+	if ( t2 == null)
+		return t1;
+	Stack<snode> s = new Stack<>();
+	snode temp = new snode();
+	temp.l = t1;
+	temp.r = t2;
+	s.add(temp);
+	snode n;
+	while (! s.isEmpty())
+	{
+		n = s.peek();
+		s.pop();
+		if (n.l == null|| n.r == null)
+			continue;
+		n.l.data += n.r.data;
+		if (n.l.left == null)
+			n.l.left = n.r.left;
+		else
+		{
+			snode t = new snode();
+			t.l = n.l.left;
+			t.r = n.r.left;
+			s.add(t);
+		}
+		if (n.l.right == null)
+			n.l.right = n.r.right;
+		else
+		{
+			snode t = new snode();
+			t.l = n.l.right;
+			t.r = n.r.right;
+			s.add(t);
+		}
+	}
+	return t1;
+}
+
+// Driver code
+public static void main(String[] args)
+{
+	/* Let us construct the first Binary Tree
+			1
+		/ \
+		2	 3
+		/ \	 \
+	4 5	 6
+	*/
+
+	Node root1 = newNode(1);
+	root1.left = newNode(2);
+	root1.right = newNode(3);
+	root1.left.left = newNode(4);
+	root1.left.right = newNode(5);
+	root1.right.right = newNode(6);
+
+	/* Let us construct the second Binary Tree
+		4
+		/ \
+		1	 7
+	/	 / \
+	3	 2 6 */
+	Node root2 = newNode(4);
+	root2.left = newNode(1);
+	root2.right = newNode(7);
+	root2.left.left = newNode(3);
+	root2.right.left = newNode(2);
+	root2.right.right = newNode(6);
+
+	Node root3 = MergeTrees(root1, root2);
+	System.out.printf("The Merged Binary Tree is:\n");
+	inorder(root3);
+}
+}
+
+// This code is contributed by vivek
